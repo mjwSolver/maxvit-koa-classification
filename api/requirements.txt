@@ -1,0 +1,7 @@
+Flask
+requests
+opencv-python-headless
+torch
+numpy
+Pillow
+albumentations
