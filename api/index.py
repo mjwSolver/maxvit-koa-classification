@@ -12,8 +12,8 @@ from flask_cors import CORS, cross_origin
 
 # Create a Flask app instance and enable CORS
 app = Flask(__name__)
-CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# CORS(app)
+# app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Load credentials from environment variables (e.g., from a .env file)
 API_KEY = os.environ.get("IBM_API_KEY")
@@ -63,7 +63,7 @@ def logits_to_prediction(logits: list) -> int:
     return int(predicted_grade)
 
 @app.route('predict', methods=['POST'])
-@cross_origin()  # Enable CORS for this route
+# @cross_origin()  # Enable CORS for this route
 def predict():
     if 'image' not in request.files:
         return jsonify({'error': 'no image provided'}), 400
