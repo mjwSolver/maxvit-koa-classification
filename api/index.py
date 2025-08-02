@@ -8,7 +8,7 @@ from PIL import Image
 from io import BytesIO
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 # Create a Flask app instance and enable CORS
 app = Flask(__name__)
@@ -62,6 +62,7 @@ def logits_to_prediction(logits: list) -> int:
     return int(predicted_grade)
 
 @app.route('/predict', methods=['POST'])
+@cross_origin()  # Enable CORS for this route
 def predict():
     if 'image' not in request.files:
         return jsonify({'error': 'no image provided'}), 400
