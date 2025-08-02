@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import requests
 import os
-import cv2
+# import cv2
 import torch
 import numpy as np
 from PIL import Image
@@ -114,3 +114,6 @@ def predict():
         return jsonify({'error': 'prediction failed', 'details': str(e)}), 500
     except (KeyError, IndexError) as e:
         return jsonify({'error': 'invalid response from IBM Watson', 'details': f'JSON parsing failed: {str(e)}'}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
