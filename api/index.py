@@ -61,7 +61,7 @@ def logits_to_prediction(logits: list) -> int:
     
     return int(predicted_grade)
 
-@app.route('/api/predict', methods=['POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
         return jsonify({'error': 'no image provided'}), 400
@@ -115,5 +115,6 @@ def predict():
     except (KeyError, IndexError) as e:
         return jsonify({'error': 'invalid response from IBM Watson', 'details': f'JSON parsing failed: {str(e)}'}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Uncomment the following lines as it will be deployed on vercel
+# if __name__ == '__main__':
+#     app.run(debug=True)
