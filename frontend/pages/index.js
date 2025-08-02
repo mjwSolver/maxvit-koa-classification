@@ -1,3 +1,12 @@
-import ImageUploader from "../components/ImageUploader";
+import React from 'react';
+import ImageUploader from '../components/ImageUploader';
 
-ImageUploader
+const HomePage = () => {
+  return (
+    <div>
+      <ImageUploader />
+    </div>
+  );
+};
+
+export default HomePage;
