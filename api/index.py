@@ -68,7 +68,7 @@ def logits_to_prediction(logits: list) -> int:
 
 # FIX 3: Added 'OPTIONS' to the list of allowed methods.
 # This is the most likely fix for the `405 Method Not Allowed` CORS error.
-@app.route('/predict', methods=['POST', 'OPTIONS'])
+@app.route('/api/predict', methods=['POST', 'OPTIONS'])
 def predict():
     # The browser sends an OPTIONS request first (preflight) for CORS.
     # This block allows that request to succeed.
