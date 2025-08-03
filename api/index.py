@@ -62,7 +62,7 @@ def logits_to_prediction(logits: list) -> int:
     
     return int(predicted_grade)
 
-@app.route('predict', methods=['POST'])
+@app.route('predict', methods=['POST', 'OPTIONS'])
 @cross_origin()  # Enable CORS for this route
 def predict():
     if 'image' not in request.files:
