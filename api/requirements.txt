@@ -1,8 +1,9 @@
 Flask
-flask-cors
 requests
-opencv-python-headless
-torch
-numpy
 Pillow
+numpy
+opencv-python-headless
 albumentations
+torch
+python-dotenv
+flask-cors
