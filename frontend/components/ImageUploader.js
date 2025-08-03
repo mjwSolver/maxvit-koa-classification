@@ -8,6 +8,7 @@ export default function ImageUploader() {
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [jsonData, setJsonData] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -39,6 +40,9 @@ export default function ImageUploader() {
 
       const data = await response.json();
 
+      // For debugging purposes, you can log the JSON response
+      setJsonData(data);
+
       if (!response.ok) {
         throw new Error(data.error || 'Prediction request failed.');
       }
@@ -67,6 +71,8 @@ export default function ImageUploader() {
       </button>
 
       {error && <p className={styles.error}>Error: {error}</p>}
+
+      {jsonData && <p className={styles.error}>{jsonData}</p>}
 
       {prediction !== null && (
         <div className={styles.result}>
