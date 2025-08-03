@@ -51,7 +51,7 @@ export default function ImageUploader() {
 
     } catch (err) {
       setError(err.message);
-      setJsonData(err);
+      setJsonData(JSON.stringify(err, null, 2)); // Show error as stringified JSON
       setPrediction(null);
     } finally {
       setIsLoading(false);
