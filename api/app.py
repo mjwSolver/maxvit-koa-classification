@@ -5,7 +5,7 @@ import json
 import numpy as np
 from io import BytesIO
 from PIL import Image
-from urllib import request, error
+from urllib import request as url_request, error
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -54,9 +54,9 @@ def get_iam_token():
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = f"apikey={API_KEY}&grant_type=urn:ibm:params:oauth:grant-type:apikey".encode('utf-8')
     
-    req = request.Request(url, data=data, headers=headers, method='POST')
+    req = url_request.Request(url, data=data, headers=headers, method='POST')
     try:
-        with request.urlopen(req) as resp:
+        with url_request.urlopen(req) as resp:
             if resp.status != 200:
                 print(f"Error getting IAM token. Status: {resp.status}")
                 return None
