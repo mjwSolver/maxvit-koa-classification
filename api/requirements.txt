@@ -1,9 +1,9 @@
-Flask
-requests
-Pillow
+# For web server
+bottle
+
+# For image processing and math
 numpy
-opencv-python-headless
-albumentations
-torch
-python-dotenv
-flask-cors
+Pillow
+
+# For making HTTP requests (optional, could use standard library)
+httpx 
