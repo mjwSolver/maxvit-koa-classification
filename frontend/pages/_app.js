@@ -1,16 +1,15 @@
-import '../globals.css';
+import '../styles/globals.css'
 
 import React from 'react';
 import ImageUploader from '../components/ImageUploader';
-// import tailwind styles
 
-
-const HomePage = () => {
+function MyApp({ Component, pageProps }) {
   return (
     <div>
+      <Component {...pageProps} />
       <ImageUploader />
     </div>
   );
-};
+}
 
-export default HomePage;
+export default MyApp;
