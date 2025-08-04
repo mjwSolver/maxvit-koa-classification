@@ -1,9 +1,9 @@
 {
-  "installCommand": "npm install --prefix frontend",
-  "buildCommand": "npm run build --prefix frontend",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "builds": [
     {
-      "src": "frontend/next.config.js",
+      "src": "next.config.js",
       "use": "@vercel/next"
     },
     {
@@ -15,10 +15,6 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
     }
   ]
 }
