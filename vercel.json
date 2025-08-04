@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "nextjs-frontend/next.config.js",
+      "src": "frontend/next.config.js",
       "use": "@vercel/next"
     },
     {
