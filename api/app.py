@@ -126,5 +126,6 @@ def predict():
         return jsonify({'error': 'Could not parse response from IBM Watson', 'details': f'Parsing failed: {str(e)}'}), 500
 
 # To run locally: `flask run` in your terminal
-if __name__ == '__main__':
-    app.run(debug=True, port=5001) # Use a different port like 5001 to avoid conflicts
+# Commented out so it can be run serverless on Vercel
+# if __name__ == '__main__':
+#     app.run(debug=True, port=5001) # Use a different port like 5001 to avoid conflicts
