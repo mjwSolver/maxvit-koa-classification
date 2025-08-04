@@ -7,17 +7,14 @@
       "use": "@vercel/next"
     },
     {
-      "src": "api/app.py",
-      "use": "@vercel/python",
-      "config": {
-        "launcher": "app.py"
-      }
+      "src": "api/app.app",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/app.py"
+      "dest": "/api/app.app"
     },
     {
       "src": "/(.*)",
