@@ -96,10 +96,10 @@ def predict():
     }
     
     req_data = json.dumps(payload).encode('utf-8')
-    pred_req = request.Request(SCORING_ENDPOINT, data=req_data, headers=headers, method='POST')
+    pred_req = url_request.Request(SCORING_ENDPOINT, data=req_data, headers=headers, method='POST')
 
     try:
-        with request.urlopen(pred_req) as resp:
+        with url_request.urlopen(pred_req) as resp:
             resp_body = resp.read()
             if resp.status >= 400:
                 error_details = resp_body.decode('utf-8', errors='ignore')
