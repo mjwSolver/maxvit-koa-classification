@@ -1,18 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "frontend/next.config.js",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "api/app.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/app.py"
+      "source": "/api/(.*)",
+      "destination": "/api/app.py"
     }
   ]
 }
