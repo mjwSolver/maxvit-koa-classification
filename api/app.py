@@ -1,24 +1,18 @@
 # Save this file as app.py
-# This is the fully optimized version.
+# This is the optimized version using Flask.
 import os
 import json
 import numpy as np
 from io import BytesIO
 from PIL import Image
 from urllib import request, error
-from bottle import Bottle, route, request, response, hook
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-app = Bottle()
-
-# --- App Configuration & CORS ---
-# This hook replaces the need for the Flask-CORS extension.
-# It attaches the necessary headers to every response.
-@hook('after_request')
-def enable_cors():
-    """Sets CORS headers for all outgoing responses."""
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, Authorization'
+# --- App Configuration ---
+app = Flask(__name__)
+# The Flask-CORS extension handles Cross-Origin Resource Sharing.
+CORS(app)
 
 # --- Environment Credentials ---
 # In production, set these variables in your deployment environment (e.g., Vercel, AWS).
@@ -29,25 +23,18 @@ SCORING_ENDPOINT = os.environ.get("IBM_SCORING_ENDPOINT")
 
 def preprocess_image(pil_image: Image.Image) -> np.ndarray:
     """Replicates the original transform using only Pillow and NumPy."""
-    # Ensure the input image is 3-channel RGB.
     if pil_image.mode != 'RGB':
         pil_image = pil_image.convert('RGB')
-        
-    # 1. Resize the image (equivalent to A.Resize)
-    resized_image = pil_image.resize((224, 224), Image.Resampling.LANCZOS)
     
-    # 2. Convert to NumPy array and normalize pixel values to [0, 1]
+    resized_image = pil_image.resize((224, 224), Image.Resampling.LANCZOS)
     img_np = np.array(resized_image, dtype=np.float32) / 255.0
-
-    # 3. Apply ImageNet normalization (equivalent to A.Normalize)
+    
     mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
     std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
     normalized_img = (img_np - mean) / std
 
-    # 4. Transpose from (H, W, C) to (C, H, W) layout
     transposed_img = normalized_img.transpose((2, 0, 1))
     
-    # 5. Add a batch dimension to match the model's expected input shape
     return np.expand_dims(transposed_img, axis=0)
 
 def logits_to_prediction_numpy(logits: list) -> int:
@@ -81,29 +68,26 @@ def get_iam_token():
 
 # --- API Endpoint ---
 
-@route('/api/predict', method=['POST', 'OPTIONS'])
+@app.route('/api/predict', methods=['POST', 'OPTIONS'])
 def predict():
-    # Bottle handles OPTIONS pre-flight requests automatically when a hook is present.
     if request.method == 'OPTIONS':
-        return {}
+        return jsonify(status='ok'), 200
 
-    image_file = request.files.get('image')
-    if not image_file:
-        response.status = 400
-        return json.dumps({'error': 'No image provided in the request.'})
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image provided in the request.'}), 400
+
+    image_file = request.files['image']
 
     try:
-        image_bytes = image_file.file.read()
+        image_bytes = image_file.read()
         pil_image = Image.open(BytesIO(image_bytes))
         input_array = preprocess_image(pil_image)
     except Exception as e:
-        response.status = 500
-        return json.dumps({'error': f'Image preprocessing failed: {str(e)}'})
+        return jsonify({'error': f'Image preprocessing failed: {str(e)}'}), 500
 
     token = get_iam_token()
     if not token:
-        response.status = 500
-        return json.dumps({'error': 'Authentication failed. Could not get IAM token.'})
+        return jsonify({'error': 'Authentication failed. Could not get IAM token.'}), 500
 
     payload = {"input_data": [{"values": input_array.tolist()}]}
     headers = {
@@ -116,23 +100,18 @@ def predict():
 
     try:
         with request.urlopen(pred_req) as resp:
+            resp_body = resp.read()
             if resp.status >= 400:
-                error_details = resp.read().decode('utf-8', errors='ignore')
+                error_details = resp_body.decode('utf-8', errors='ignore')
                 raise error.URLError(f"Prediction failed with status {resp.status}. Details: {error_details}")
 
-            result = json.loads(resp.read().decode('utf-8'))
+            result = json.loads(resp_body.decode('utf-8'))
             model_output_logits = result['predictions'][0]['values'][0]
             final_prediction = logits_to_prediction_numpy(model_output_logits)
             
-            response.content_type = 'application/json'
-            return json.dumps({'predicted_grade': final_prediction})
+            return jsonify({'predicted_grade': final_prediction})
 
     except error.URLError as e:
-        response.status = 500
-        return json.dumps({'error': 'Prediction request to IBM failed', 'details': str(e)})
+        return jsonify({'error': 'Prediction request to IBM failed', 'details': str(e)}), 500
     except (KeyError, IndexError) as e:
-        response.status = 500
-        return json.dumps({'error': 'Could not parse response from IBM Watson', 'details': f'Parsing failed: {str(e)}'})
-
-# Note: The if __name__ == '__main__': block is removed
-# as this file is intended for a serverless deployment environment.
+        return jsonify({'error': 'Could not parse response from IBM Watson', 'details': f'Parsing failed: {str(e)}'}), 500

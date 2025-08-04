@@ -1,9 +1,9 @@
-# For web server
-bottle
+# For the web server framework
+Flask
 
-# For image processing and math
+# For handling Cross-Origin Resource Sharing
+Flask-Cors
+
+# For numerical operations and image processing
 numpy
 Pillow
-
-# For making HTTP requests (optional, could use standard library)
-httpx 
