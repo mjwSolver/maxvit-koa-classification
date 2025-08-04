@@ -1,0 +1,18 @@
+{
+  "builds": [
+    {
+      "src": "nextjs-frontend/next.config.js",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "api/app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/app.py"
+    }
+  ]
+}
