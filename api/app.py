@@ -6,7 +6,9 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 from urllib import request, error
-from bottle import route, request, response, hook
+from bottle import Bottle, route, request, response, hook
+
+app = Bottle()
 
 # --- App Configuration & CORS ---
 # This hook replaces the need for the Flask-CORS extension.
