@@ -304,7 +304,17 @@ export default function ImageUploader() {
                 <h3 className="text-lg font-semibold text-white">Prediction Result</h3>
                 <p className="mt-1 text-slate-200">
                   The predicted Osteoarthritis grade is:{' '}
-                  <span className="inline-flex items-center rounded-md bg-emerald-900/40 px-2 py-0.5 font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-800/60">
+                 <span
+                  className={`inline-flex items-center rounded-md px-2 py-0.5 font-semibold text-white ring-1 ring-inset ${
+                    prediction === '0'
+                    ? 'bg-green-900/40 text-green-300 ring-green-800/60'
+                    : prediction === '1'
+                    ? 'bg-orange-900/40 text-orange-300 ring-orange-800/60'
+                    : prediction === '2'
+                    ? 'bg-red-900/40 text-red-300 ring-red-800/60'
+                    : 'bg-slate-900/40 text-slate-300 ring-slate-800/60' // Default case
+                  }`}
+                  >
                     {prediction}
                   </span>
                 </p>
