@@ -291,6 +291,9 @@ export default function ImageUploader() {
             </div>
           </div>
         </div>
+        <div className="mt-8 text-center text-sm text-slate-500">
+          <p>&copy; 2025 mjwSolver. All Rights Reserved.</p>
+        </div>
       </div>
     </div>
   );
