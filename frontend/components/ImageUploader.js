@@ -3,6 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const MAX_FILE_MB = 10;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png'];
 
+const DEFAULT_IMAGES = [
+  '/images/9225792R-1.png',
+  '/images/9053047L-2.png',
+];
+
 export default function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -51,6 +56,30 @@ export default function ImageUploader() {
     setPreview(URL.createObjectURL(file));
     setPrediction(null);
   };
+
+  const handleDefaultImageSelect = useCallback(async (imageUrl) => {
+    setIsLoading(true);
+    setError(null);
+    setPrediction(null);
+    setHint('Loading sample image...');
+
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to load image: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const file = new File([blob], imageUrl.split('/').pop(), { type: blob.type });
+
+      handleSetFile(file);
+      setHint('Sample image loaded. You can now predict or upload your own.');
+    } catch (err) {
+      setError(err.message);
+      handleReset();
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
@@ -194,6 +223,20 @@ export default function ImageUploader() {
               </label>
 
               <p className="mt-3 text-sm text-slate-400">{hint}</p>
+
+              <div className="mt-4 flex flex-row space-x-4">
+                {DEFAULT_IMAGES.map((imageUrl) => (
+                  <button
+                    key={imageUrl}
+                    onClick={() => handleDefaultImageSelect(imageUrl)}
+                    disabled={isLoading}
+                    className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg px-4 py-2 text-sm font-medium text-slate-200 ring-1 ring-slate-700 hover:bg-slate-800 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                  >
+                    Load Sample {imageUrl.split('-')[1].replace('.jpg', '').replace('.png', '')}
+                  </button>
+                ))}
+              </div>
+
             </div>
 
             {preview && (
